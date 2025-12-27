@@ -1,0 +1,282 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        1360,
+        592
+      ],
+      "id": "999a69b1-9aae-4c69-8f54-1b1a74920aec",
+      "name": "When chat message received",
+      "webhookId": "509693f1-86e3-46ea-9b6c-555fa2238cab"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a professional AI assistant for an educational institution.\n\nCRITICAL LANGUAGE RULE:\n- ALWAYS respond in the EXACT SAME LANGUAGE as the user's current message\n- If user writes in English, respond ONLY in English\n- If user writes in Hindi, respond ONLY in Hindi\n- If user writes in any other language, respond in that language\n- Do NOT switch languages mid-conversation unless the user switches first\n- The language of the CURRENT message determines your response language\n\nTool Usage Instructions:\n\n1. Get Course Information Tool:\n   - Use when users ask about courses, pricing, duration, curriculum, or course details\n   - This tool searches the Course sheet for information\n\n2. FAQ Tool:\n   - Use when users ask common questions about policies, procedures, or general information\n   - This tool searches the FAQ sheet\n\n3. Question Logging Tool (CRITICAL PROCESS):\n   When you cannot answer a question using Get Course Information or FAQ tools:\n   \n   Step 1 - Ask for Mobile Number:\n   - Inform the user you don't have the answer (in their language)\n   - Ask for their mobile number so someone can follow up\n   - DO NOT call the Question tool yet\n   - Wait for their next message\n   \n   Step 2 - Log the Question:\n   - When user provides a mobile number (usually 10 digits), immediately call the Question tool\n   - Pass these parameters:\n     * customer_question: The ORIGINAL question they asked (not the mobile number)\n     * mobile_number: The mobile number they just provided\n   - After successfully calling the tool, confirm the question was logged\n   - Tell them someone will contact them soon\n   \n   Special Cases:\n   - If user refuses to provide mobile number, log with mobile_number: \"Not provided\"\n   - If user already provided mobile number earlier in conversation, use that\n\nResponse Guidelines:\n- Be professional, clear, and concise\n- Always greet users politely\n- End responses with appropriate closing\n- Maintain respectful tone\n- Answer accurately based on available tools"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1568,
+        592
+      ],
+      "id": "3a6f4dea-aae6-4253-9784-05ecc7f67fd1",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        800
+      ],
+      "id": "ba17a024-7df5-4a17-9772-34a2771fdd58",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "hG7tbZhLhFDcZEn5",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1568,
+        800
+      ],
+      "id": "8f38bed2-4c4d-43c8-90a0-c65e55cb1815",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1E418gDxZR5yTe5Dbhe7Uf9qndmicQ4dCAbQx_fPQHsg",
+          "mode": "list",
+          "cachedResultName": "Dataforautomation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1E418gDxZR5yTe5Dbhe7Uf9qndmicQ4dCAbQx_fPQHsg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 616808663,
+          "mode": "list",
+          "cachedResultName": "Course",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1E418gDxZR5yTe5Dbhe7Uf9qndmicQ4dCAbQx_fPQHsg/edit#gid=616808663"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1744,
+        800
+      ],
+      "id": "4ae2ea92-8b3c-4a89-ac1d-e9252dbbea35",
+      "name": "Get Course Information",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Trve3Uv1ayVffIqd",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1E418gDxZR5yTe5Dbhe7Uf9qndmicQ4dCAbQx_fPQHsg",
+          "mode": "list",
+          "cachedResultName": "Dataforautomation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1E418gDxZR5yTe5Dbhe7Uf9qndmicQ4dCAbQx_fPQHsg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "FAQ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1E418gDxZR5yTe5Dbhe7Uf9qndmicQ4dCAbQx_fPQHsg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1968,
+        848
+      ],
+      "id": "e686ffca-03db-47b0-ab54-c3875f18615a",
+      "name": "FAQ",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Trve3Uv1ayVffIqd",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1E418gDxZR5yTe5Dbhe7Uf9qndmicQ4dCAbQx_fPQHsg",
+          "mode": "list",
+          "cachedResultName": "Dataforautomation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1E418gDxZR5yTe5Dbhe7Uf9qndmicQ4dCAbQx_fPQHsg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2006158368,
+          "mode": "list",
+          "cachedResultName": "unansweredQueries",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1E418gDxZR5yTe5Dbhe7Uf9qndmicQ4dCAbQx_fPQHsg/edit#gid=2006158368"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "customer Queries/ Question": "={{ $fromAI('customer_question', 'The customer question or query that could not be answered', 'string') }}",
+            "Mobile Number": "={{ $fromAI('mobile_number', 'Customer mobile number if provided', 'string', 'Not provided') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "customer Queries/ Question",
+              "displayName": "customer Queries/ Question",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Mobile Number",
+              "displayName": "Mobile Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        2160,
+        784
+      ],
+      "id": "c731120f-d96c-4a60-9087-1a4c126e4bfc",
+      "name": "Question",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Trve3Uv1ayVffIqd",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Course Information": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FAQ": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Question": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1
+  },
+  "versionId": "3963a00c-39b1-4724-abfd-b8d414a4b341",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6e5462b00f2440618cee61c2c0d8846b2f91913021f5d47a87204bdfed5bfa8c"
+  },
+  "id": "nLGihSPqSPi28HG5",
+  "tags": []
+}
