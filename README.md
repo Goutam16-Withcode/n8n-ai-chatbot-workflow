@@ -45,4 +45,3 @@ Users can:
 - Ask about courses in any language
 - Get answers to FAQs
 - Have their unanswered questions logged with contact information
-## LIVE LINK : https://goutam88.app.n8n.cloud/webhook/509693f1-86e3-46ea-9b6c-555fa2238cab/chat
